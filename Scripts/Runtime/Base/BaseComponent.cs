@@ -230,6 +230,8 @@ namespace UnityGameFramework.Runtime
         private void Update()
         {
             GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
+            //驱动所有模块的 update
+            //GameFramework.Event.EventManager
         }
 
         private void OnApplicationQuit()
