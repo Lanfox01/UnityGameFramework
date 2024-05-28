@@ -52,7 +52,9 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Setting manager is invalid.");
                 return;
             }
-
+            Debug.Log("SettingManager type Name: " + m_SettingManager.GetType().FullName);
+            //GameFramework.Setting.SettingManager   一般  GetModule 得到的东西 都是框架类，不会派生，类似固定工具；
+            
             SettingHelperBase settingHelper = Helper.CreateHelper(m_SettingHelperTypeName, m_CustomSettingHelper);
             if (settingHelper == null)
             {

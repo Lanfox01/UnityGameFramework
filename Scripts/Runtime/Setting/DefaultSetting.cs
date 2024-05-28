@@ -18,6 +18,9 @@ namespace UnityGameFramework.Runtime
     /// </summary>
     public sealed class DefaultSetting
     {
+        /// <summary>
+        ///  有个问题， m_Settings 值是哪里来的 ？
+        /// </summary>
         private readonly SortedDictionary<string, string> m_Settings = new SortedDictionary<string, string>(StringComparer.Ordinal);
 
         /// <summary>
