@@ -15,6 +15,7 @@ namespace UnityGameFramework.Runtime
 {
     /// <summary>
     /// 基础组件。
+    ///  DPI 分辨率 游戏速度 息屏等
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("Game Framework/Base")]
