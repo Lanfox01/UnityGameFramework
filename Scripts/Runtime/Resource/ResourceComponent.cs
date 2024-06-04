@@ -606,6 +606,9 @@ namespace UnityGameFramework.Runtime
 
             m_EditorResourceMode = baseComponent.EditorResourceMode;
             m_ResourceManager = m_EditorResourceMode ? baseComponent.EditorResourceHelper : GameFrameworkEntry.GetModule<IResourceManager>();
+            Debug.Log("IResourceManager 实例 m_ResourceManager 派生类型 " + m_ResourceManager.GetType().FullName);
+            Log.Debug("IResourceManager 实例 m_ResourceManager 派生类型 " + m_ResourceManager.GetType().FullName);
+            
             if (m_ResourceManager == null)
             {
                 Log.Fatal("Resource manager is invalid.");

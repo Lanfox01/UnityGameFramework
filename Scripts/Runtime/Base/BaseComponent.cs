@@ -204,7 +204,8 @@ namespace UnityGameFramework.Runtime
                 Utility.Converter.ScreenDpi = DefaultDpi;
             }
 
-            m_EditorResourceMode &= Application.isEditor;
+            // m_EditorResourceMode &= Application.isEditor;
+            m_EditorResourceMode = false;
             if (m_EditorResourceMode)
             {
                 Log.Info("During this run, Game Framework will use editor resource files, which you should validate first.");
