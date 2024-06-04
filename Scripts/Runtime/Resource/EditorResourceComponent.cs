@@ -575,10 +575,22 @@ namespace UnityGameFramework.Runtime
 
         private void Update()
         {
-            if (m_LoadAssetInfos.Count > 0)
+            // 是否有待加载的资产?
+            // 设置循环以处理资产加载。
+            // count 记录已处理的资产数量。 对比  m_LoadAssetCountPerFrame
+            // current 指向列表中的第一个资产。
+            if (m_LoadAssetInfos.Count > 0) 
             {
                 int count = 0;
                 LinkedListNode<LoadAssetInfo> current = m_LoadAssetInfos.First;
+                /*
+                 * 对于每个资产，计算自加载过程开始以来的经过时间（elapseSeconds）。
+                 * 如果经过时间超过指定的延迟时间（loadAssetInfo.DelaySeconds），则继续加载资产
+                 * 检查资产是否已缓存（GetCachedAsset(loadAssetInfo.AssetName)）。
+                 * 如果未缓存，尝试使用 Unity 的 AssetDatabase 加载资产
+                 * 如果加载成功，调用成功回调（loadAssetInfo.LoadAssetCallbacks.LoadAssetSuccessCallback）。
+                 * 否则，调用失败回调（loadAssetInfo.LoadAssetCallbacks.LoadAssetFailureCallback）。
+                 */
                 while (current != null && count < m_LoadAssetCountPerFrame)
                 {
                     LoadAssetInfo loadAssetInfo = current.Value;
@@ -626,9 +638,9 @@ namespace UnityGameFramework.Runtime
                         count++;
                     }
                     else
-                    {
+                    {   // 用来等待时间 进度条反馈？
                         if (loadAssetInfo.LoadAssetCallbacks.LoadAssetUpdateCallback != null)
-                        {
+                        {   
                             loadAssetInfo.LoadAssetCallbacks.LoadAssetUpdateCallback(loadAssetInfo.AssetName, elapseSeconds / loadAssetInfo.DelaySeconds, loadAssetInfo.UserData);
                         }
 
@@ -637,9 +649,19 @@ namespace UnityGameFramework.Runtime
                 }
             }
 
+            /*
+             * 代码检查是否有待加载的场景
+             * 设置循环以处理场景加载
+             * current 指向列表中的第一个场景
+             */
             if (m_LoadSceneInfos.Count > 0)
             {
                 LinkedListNode<LoadSceneInfo> current = m_LoadSceneInfos.First;
+                /*
+                 *  对于每个场景，检查异步操作是否已完成（loadSceneInfo.AsyncOperation.isDone）。
+                 *  如果异步操作允许激活场景（loadSceneInfo.AsyncOperation.allowSceneActivation），则执行成功回调。
+                 *  否则，执行失败回调。
+                 */
                 while (current != null)
                 {
                     LoadSceneInfo loadSceneInfo = current.Value;
@@ -665,7 +687,7 @@ namespace UnityGameFramework.Runtime
                         current = next;
                     }
                     else
-                    {
+                    {   //如果场景仍在加载中，执行更新回调。
                         if (loadSceneInfo.LoadSceneCallbacks.LoadSceneUpdateCallback != null)
                         {
                             loadSceneInfo.LoadSceneCallbacks.LoadSceneUpdateCallback(loadSceneInfo.SceneAssetName, loadSceneInfo.AsyncOperation.progress, loadSceneInfo.UserData);
@@ -676,9 +698,18 @@ namespace UnityGameFramework.Runtime
                 }
             }
 
+            /*
+             * 代码检查是否有待卸载的场景（m_UnloadSceneInfos.Count > 0）。
+             * 设置循环以处理场景卸载。
+             * current 指向列表中的第一个场景。
+             */
             if (m_UnloadSceneInfos.Count > 0)
             {
                 LinkedListNode<UnloadSceneInfo> current = m_UnloadSceneInfos.First;
+                /*
+                 * 对于每个场景，检查异步操作是否已完成（unloadSceneInfo.AsyncOperation.isDone）。
+                 * 如果异步操作允许激活场景（unloadSceneInfo.AsyncOperation.allowSceneActivation），则执行成功回调。
+                 */
                 while (current != null)
                 {
                     UnloadSceneInfo unloadSceneInfo = current.Value;
@@ -692,7 +723,7 @@ namespace UnityGameFramework.Runtime
                             }
                         }
                         else
-                        {
+                        {   //否则，执行失败回调。
                             if (unloadSceneInfo.UnloadSceneCallbacks.UnloadSceneFailureCallback != null)
                             {
                                 unloadSceneInfo.UnloadSceneCallbacks.UnloadSceneFailureCallback(unloadSceneInfo.SceneAssetName, unloadSceneInfo.UserData);
