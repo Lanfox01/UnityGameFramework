@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace GameFramework
 {
@@ -26,6 +27,31 @@ namespace GameFramework
         {
             foreach (GameFrameworkModule module in s_GameFrameworkModules)
             {
+                Debug.Log("GameFrameworkModule 's Update  "+module.GetType().FullName);
+                /* 包括 如下模块：
+                 *  虽然很多模块都有重写 update(),                                       但是，只有部分有这个函数体代码；、
+                 *  GameFramework.Event.EventManager                                 有  事件管理
+                 *  GameFramework.ObjectPool.ObjectPoolManager                       有  对象池管理
+                 *  GameFramework.Download.DownloadManager                           有  下载累计时间
+                 *  GameFramework.FileSystem.FileSystemManager                       无  文件系统管理器
+                 *  GameFrameworkModule 's Update  GameFramework.Scene.SceneManager  无  场景管理器。
+                 *  GameFrameworkModule 's Update  GameFramework.Fsm.FsmManager      有  有限状态机管理器。
+                 *  GameFramework.WebRequest.WebRequestManager                       有  Web 请求代理。
+                 *  GameFramework.UI.UIManager                                       有  界面管理器。
+                 *  GameFramework.Sound.SoundManager                                 无   声音代理。
+                 *  GameFramework.Setting.SettingManager                             无  游戏配置管理器。
+                 *  GameFramework.Network.NetworkManager                             有  网络管理器
+                 *  GameFramework.Localization.LocalizationManager                   无 本地化管理器。
+                 *  GameFramework.Entity.EntityManager                               有  实体管理器。
+                 *  GameFramework.DataTable.DataTableManager                         无  数据表管理器。。
+                 *  GameFramework.DataNode.DataNodeManager                           无   数据结点管理器。
+                 *  GameFramework.Config.ConfigManager                               无   全局配置管理器。
+                 *  GameFramework.Debugger.DebuggerManager                           有 调试器管理器。
+                 *  GameFramework.Procedure.ProcedureManager                         无  流程管理器。
+                 * 
+                 * 
+                */
+               
                 module.Update(elapseSeconds, realElapseSeconds);
             }
         }

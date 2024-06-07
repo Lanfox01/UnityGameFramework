@@ -20,7 +20,7 @@ namespace GameFramework.DataTable
         private IResourceManager m_ResourceManager;
         private IDataProviderHelper<DataTableBase> m_DataProviderHelper;
         private IDataTableHelper m_DataTableHelper;
-
+            
         /// <summary>
         /// 初始化数据表管理器的新实例。
         /// </summary>

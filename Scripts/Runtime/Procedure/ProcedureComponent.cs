@@ -16,6 +16,9 @@ namespace UnityGameFramework.Runtime
 {
     /// <summary>
     /// 流程组件。
+    /// 主要封装框架的 ProcedureManager 模块 Module
+    /// 正常情况下是不需要 修改到底层的 ProcedureManager，只要调用 ProcedureComponent这个封装就可以
+    /// 一帧之后会调 GameFramework.Procedure.ProcedureManager 这个流程
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("Game Framework/Procedure")]
@@ -65,10 +68,14 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Procedure manager is invalid.");
                 return;
             }
+            Debug.Log("Procedure manager: "+m_ProcedureManager.GetType().FullName);
+            
         }
 
         private IEnumerator Start()
         {
+            
+            //根据流程名字 创建流程对象  必须预先在dll 中
             ProcedureBase[] procedures = new ProcedureBase[m_AvailableProcedureTypeNames.Length];
             for (int i = 0; i < m_AvailableProcedureTypeNames.Length; i++)
             {
@@ -101,7 +108,8 @@ namespace UnityGameFramework.Runtime
             m_ProcedureManager.Initialize(GameFrameworkEntry.GetModule<IFsmManager>(), procedures);
 
             yield return new WaitForEndOfFrame();
-
+            // 等待一帧后， 启动 Entrance 开启流程
+            //  StarForce.ProcedureLaunch.
             m_ProcedureManager.StartProcedure(m_EntranceProcedure.GetType());
         }
 

@@ -74,7 +74,7 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Config manager is invalid.");
                 return;
             }
-
+            Debug.Log("ConfigComponent ConfigManager: "+ m_ConfigManager.GetType().FullName);
             m_ConfigManager.ReadDataSuccess += OnReadDataSuccess;
             m_ConfigManager.ReadDataFailure += OnReadDataFailure;
 
