@@ -142,6 +142,7 @@ namespace GameFramework.Resource
 
                 m_VerifyResourceLengthPerFrame = verifyResourceLengthPerFrame;
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
+                /// 加载路径是  file:///C:/Users/Administrator/AppData/LocalLow/Game Framework/Star Force/GameFrameworkList.dat
             }
 
             private bool VerifyResource(VerifyInfo verifyInfo)

@@ -204,8 +204,8 @@ namespace UnityGameFramework.Runtime
                 Utility.Converter.ScreenDpi = DefaultDpi;
             }
 
-            // m_EditorResourceMode &= Application.isEditor;
-            m_EditorResourceMode = false;
+             m_EditorResourceMode &= Application.isEditor;
+             //m_EditorResourceMode = false;
             if (m_EditorResourceMode)
             {
                 Log.Info("During this run, Game Framework will use editor resource files, which you should validate first.");
@@ -233,6 +233,7 @@ namespace UnityGameFramework.Runtime
             GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
             //驱动所有模块的 update
             //GameFramework.Event.EventManager
+            Debug.Log("EditorResourceMode "+ EditorResourceMode);
         }
 
         private void OnApplicationQuit()

@@ -22,7 +22,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return Application.version;
+                return Application.version;// 这个似乎是编译出包的时候 在 Building Setting 中修改的？  0.1.0 ？
             }
         }
 
