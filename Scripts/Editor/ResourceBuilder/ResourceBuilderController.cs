@@ -19,6 +19,9 @@ using UnityGameFramework.Runtime;
 
 namespace UnityGameFramework.Editor.ResourceTools
 {
+    /// <summary>
+    /// 本类主要是 资源打包 生成 等控制
+    /// </summary>
     public sealed partial class ResourceBuilderController
     {
         private const string RemoteVersionListFileName = "GameFrameworkVersion.dat";

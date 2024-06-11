@@ -223,6 +223,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             {
                 XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(m_ConfigurationPath);
+                Debug.Log("m_ConfigurationPath :"+ m_ConfigurationPath);
                 XmlNode xmlRoot = xmlDocument.SelectSingleNode("UnityGameFramework");
                 XmlNode xmlEditor = xmlRoot.SelectSingleNode("ResourceEditor");
                 XmlNode xmlSettings = xmlEditor.SelectSingleNode("Settings");

@@ -22,7 +22,7 @@ namespace UnityGameFramework.Runtime
     public class DefaultResourceHelper : ResourceHelperBase
     {
         /// <summary>
-        /// 直接从指定文件路径加载数据流。
+        /// 直接从指定文件路径加载数据流。 加载 .Bytes
         /// </summary>
         /// <param name="fileUri">文件路径。</param>
         /// <param name="loadBytesCallbacks">加载数据流回调函数集。</param>

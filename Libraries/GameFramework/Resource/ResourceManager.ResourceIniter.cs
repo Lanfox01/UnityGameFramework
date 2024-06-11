@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace GameFramework.Resource
 {
@@ -60,10 +61,17 @@ namespace GameFramework.Resource
                 {
                     throw new GameFrameworkException("Read-only path is invalid.");
                 }
-
+                Debug.Log(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName));
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadPackageVersionListSuccess, OnLoadPackageVersionListFailure), null);
             }
-
+            /// <summary>
+            /// 当加载成功 PackageVersionList 这个远端文件？   解密 PackageVersionList 应该是 总览目录文件？
+            /// </summary>
+            /// <param name="fileUri"></param>
+            /// <param name="bytes"></param>
+            /// <param name="duration"></param>
+            /// <param name="userData"></param>
+            /// <exception cref="GameFrameworkException"></exception>
             private void OnLoadPackageVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
                 MemoryStream memoryStream = null;
