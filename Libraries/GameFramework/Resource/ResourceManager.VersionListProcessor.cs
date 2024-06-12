@@ -74,7 +74,7 @@ namespace GameFramework.Resource
             }
 
             /// <summary>
-            /// 检查版本资源列表。
+            /// 检查版本资源列表。  对比远程和c盘本地的 GameFrameworkVersion.dat 解压出里面的 InternalResourceVersion值 相等就是最新不用更新
             /// </summary>
             /// <param name="latestInternalResourceVersion">最新的内部资源版本号。</param>
             /// <returns>检查版本资源列表结果。</returns>

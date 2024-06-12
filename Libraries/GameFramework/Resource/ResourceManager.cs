@@ -1105,7 +1105,7 @@ namespace GameFramework.Resource
             if (m_ResourceIniter == null)
             {
                 throw new GameFrameworkException("You can not use InitResources at this time.");
-            }
+            } 
 
             m_RefuseSetFlag = true;
             m_InitResourcesCompleteCallback = initResourcesCompleteCallback;
@@ -2393,7 +2393,7 @@ namespace GameFramework.Resource
                 ReferencePool.Release(resourceVerifyStartEventArgs);
             }
         }
-
+        // 资源验证成功回调
         private void OnVerifierResourceVerifySuccess(ResourceName resourceName, int length)
         {
             if (m_ResourceVerifySuccessEventHandler != null)
@@ -2429,7 +2429,7 @@ namespace GameFramework.Resource
         {
             m_ResourceUpdater.AddResourceUpdate(resourceName, fileSystemName, loadType, length, hashCode, compressedLength, compressedHashCode, Utility.Path.GetRegularPath(Path.Combine(m_ReadWritePath, resourceName.FullName)));
         }
-
+        
         private void OnCheckerResourceCheckComplete(int movedCount, int removedCount, int updateCount, long updateTotalLength, long updateTotalCompressedLength)
         {
             m_VersionListProcessor.VersionListUpdateSuccess -= OnVersionListProcessorUpdateSuccess;

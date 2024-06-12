@@ -79,7 +79,7 @@ namespace GameFramework.Resource
                 }
 
                 m_CurrentVariant = currentVariant;
-                m_IgnoreOtherVariant = ignoreOtherVariant;
+                m_IgnoreOtherVariant = ignoreOtherVariant;// c盘的 GameFrameworkVersion.dat 和  GameFrameworkList.dat 以及 StreamingAssets 目录下的 GameFrameworkList.dat 全部读取出，然后验证在回到函数里面
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadUpdatableVersionListSuccess, OnLoadUpdatableVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadOnlyVersionListSuccess, OnLoadReadOnlyVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
@@ -119,101 +119,124 @@ namespace GameFramework.Resource
                 return checkInfo;
             }
 
+            // 定义一个私有方法来刷新检查信息状态
             private void RefreshCheckInfoStatus()
             {
-                if (!m_UpdatableVersionListReady || !m_ReadOnlyVersionListReady || !m_ReadWriteVersionListReady)
+            // 如果可更新版本列表、只读版本列表或读写版本列表没有准备好，则返回
+            if (!m_UpdatableVersionListReady || !m_ReadOnlyVersionListReady || !m_ReadWriteVersionListReady)
+            {
+                return;
+            }
+
+            // 初始化移动、移除和更新的资源计数器
+            int movedCount = 0;
+            int removedCount = 0;
+            int updateCount = 0;
+            // 初始化更新的总长度和压缩后的总长度
+            long updateTotalLength = 0L;
+            long updateTotalCompressedLength = 0L;
+
+            // 遍历所有检查信息
+            foreach (KeyValuePair<ResourceName, CheckInfo> checkInfo in m_CheckInfos)
+            {
+                CheckInfo ci = checkInfo.Value;
+                // 刷新资源状态
+                ci.RefreshStatus(m_CurrentVariant, m_IgnoreOtherVariant);
+
+                // 根据资源状态进行不同的处理
+                if (ci.Status == CheckInfo.CheckStatus.StorageInReadOnly)
                 {
-                    return;
+                    // 如果资源在只读存储中，则添加到资源管理器的资源信息中
+                    m_ResourceManager.m_ResourceInfos.Add(ci.ResourceName, new ResourceInfo(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, true, true));
                 }
-
-                int movedCount = 0;
-                int removedCount = 0;
-                int updateCount = 0;
-                long updateTotalLength = 0L;
-                long updateTotalCompressedLength = 0L;
-                foreach (KeyValuePair<ResourceName, CheckInfo> checkInfo in m_CheckInfos)
+                else if (ci.Status == CheckInfo.CheckStatus.StorageInReadWrite)
                 {
-                    CheckInfo ci = checkInfo.Value;
-                    ci.RefreshStatus(m_CurrentVariant, m_IgnoreOtherVariant);
-                    if (ci.Status == CheckInfo.CheckStatus.StorageInReadOnly)
+                    // 如果资源在读写存储中，并且需要移动到磁盘或文件系统，则进行移动操作
+                    if (ci.NeedMoveToDisk || ci.NeedMoveToFileSystem)
                     {
-                        m_ResourceManager.m_ResourceInfos.Add(ci.ResourceName, new ResourceInfo(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, true, true));
-                    }
-                    else if (ci.Status == CheckInfo.CheckStatus.StorageInReadWrite)
-                    {
-                        if (ci.NeedMoveToDisk || ci.NeedMoveToFileSystem)
-                        {
-                            movedCount++;
-                            string resourceFullName = ci.ResourceName.FullName;
-                            string resourcePath = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, resourceFullName));
-                            if (ci.NeedMoveToDisk)
-                            {
-                                IFileSystem fileSystem = m_ResourceManager.GetFileSystem(ci.ReadWriteFileSystemName, false);
-                                if (!fileSystem.SaveAsFile(resourceFullName, resourcePath))
-                                {
-                                    throw new GameFrameworkException(Utility.Text.Format("Save as file '{0}' to '{1}' from file system '{2}' error.", resourceFullName, resourcePath, fileSystem.FullPath));
-                                }
+                        movedCount++;
+                        string resourceFullName = ci.ResourceName.FullName;
+                        string resourcePath = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, resourceFullName));
 
-                                fileSystem.DeleteFile(resourceFullName);
-                            }
-
-                            if (ci.NeedMoveToFileSystem)
-                            {
-                                IFileSystem fileSystem = m_ResourceManager.GetFileSystem(ci.FileSystemName, false);
-                                if (!fileSystem.WriteFile(resourceFullName, resourcePath))
-                                {
-                                    throw new GameFrameworkException(Utility.Text.Format("Write resource '{0}' to file system '{1}' error.", resourceFullName, fileSystem.FullPath));
-                                }
-
-                                if (File.Exists(resourcePath))
-                                {
-                                    File.Delete(resourcePath);
-                                }
-                            }
-                        }
-
-                        m_ResourceManager.m_ResourceInfos.Add(ci.ResourceName, new ResourceInfo(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, false, true));
-                        m_ResourceManager.m_ReadWriteResourceInfos.Add(ci.ResourceName, new ReadWriteResourceInfo(ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode));
-                    }
-                    else if (ci.Status == CheckInfo.CheckStatus.Update)
-                    {
-                        m_ResourceManager.m_ResourceInfos.Add(ci.ResourceName, new ResourceInfo(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, false, false));
-                        updateCount++;
-                        updateTotalLength += ci.Length;
-                        updateTotalCompressedLength += ci.CompressedLength;
-                        if (ResourceNeedUpdate != null)
-                        {
-                            ResourceNeedUpdate(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, ci.CompressedHashCode);
-                        }
-                    }
-                    else if (ci.Status == CheckInfo.CheckStatus.Unavailable || ci.Status == CheckInfo.CheckStatus.Disuse)
-                    {
-                        // Do nothing.
-                    }
-                    else
-                    {
-                        throw new GameFrameworkException(Utility.Text.Format("Check resources '{0}' error with unknown status.", ci.ResourceName.FullName));
-                    }
-
-                    if (ci.NeedRemove)
-                    {
-                        removedCount++;
-                        if (ci.ReadWriteUseFileSystem)
+                        // 如果需要移动到磁盘，则从文件系统中保存为文件
+                        if (ci.NeedMoveToDisk)
                         {
                             IFileSystem fileSystem = m_ResourceManager.GetFileSystem(ci.ReadWriteFileSystemName, false);
-                            fileSystem.DeleteFile(ci.ResourceName.FullName);
+                            if (!fileSystem.SaveAsFile(resourceFullName, resourcePath))
+                            {
+                                throw new GameFrameworkException(Utility.Text.Format("Save as file '{0}' to '{1}' from file system '{2}' error.", resourceFullName, resourcePath, fileSystem.FullPath));
+                            }
+
+                            // 保存后从文件系统中删除该文件
+                            fileSystem.DeleteFile(resourceFullName);
                         }
-                        else
+
+                        // 如果需要移动到文件系统，则写入文件到文件系统
+                        if (ci.NeedMoveToFileSystem)
                         {
-                            string resourcePath = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, ci.ResourceName.FullName));
+                            IFileSystem fileSystem = m_ResourceManager.GetFileSystem(ci.FileSystemName, false);
+                            if (!fileSystem.WriteFile(resourceFullName, resourcePath))
+                            {
+                                throw new GameFrameworkException(Utility.Text.Format("Write resource '{0}' to file system '{1}' error.", resourceFullName, fileSystem.FullPath));
+                            }
+
+                            // 写入后删除原路径的文件
                             if (File.Exists(resourcePath))
                             {
                                 File.Delete(resourcePath);
                             }
                         }
                     }
+
+                    // 添加到资源管理器的资源信息和读写资源信息中
+                    m_ResourceManager.m_ResourceInfos.Add(ci.ResourceName, new ResourceInfo(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, false, true));
+                    m_ResourceManager.m_ReadWriteResourceInfos.Add(ci.ResourceName, new ReadWriteResourceInfo(ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode));
+                }
+                else if (ci.Status == CheckInfo.CheckStatus.Update)
+                {
+                    // 如果资源状态为更新，则添加到资源管理器的资源信息中，并更新计数器和总长度
+                    m_ResourceManager.m_ResourceInfos.Add(ci.ResourceName, new ResourceInfo(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, false, false));
+                    updateCount++;
+                    updateTotalLength += ci.Length;
+                    updateTotalCompressedLength += ci.CompressedLength;
+
+                    // 如果定义了资源需要更新的事件，则触发该事件
+                    if (ResourceNeedUpdate != null)
+                    {
+                        ResourceNeedUpdate(ci.ResourceName, ci.FileSystemName, ci.LoadType, ci.Length, ci.HashCode, ci.CompressedLength, ci.CompressedHashCode);
+                    }
+                }
+                else if (ci.Status == CheckInfo.CheckStatus.Unavailable || ci.Status == CheckInfo.CheckStatus.Disuse)
+                {
+                    // 如果资源状态为不可用或废弃，则不做任何操作
+                }
+                else
+                {
+                    // 如果资源状态未知，则抛出异常
+                    throw new GameFrameworkException(Utility.Text.Format("Check resources '{0}' error with unknown status.", ci.ResourceName.FullName));
                 }
 
+                // 如果需要移除资源，则更新移除计数器，并执行移除操作
+                if (ci.NeedRemove)
+                {
+                    removedCount++;
+                    if (ci.ReadWriteUseFileSystem)
+                    {
+                        IFileSystem fileSystem = m_ResourceManager.GetFileSystem(ci.ReadWriteFileSystemName, false);
+                        fileSystem.DeleteFile(ci.ResourceName.FullName);
+                    }
+                    else
+                    {
+                        string resourcePath = Utility.Path.GetRegularPath(Path.Combine(m_ResourceManager.m_ReadWritePath, ci.ResourceName.FullName));
+                        if (File.Exists(resourcePath))
+                        {
+                            File.Delete(resourcePath);
+                        }
+                    }
+                }
+            }
+
+                // 如果有资源被移动或移除，则移除空的文件
                 if (movedCount > 0 || removedCount > 0)
                 {
                     RemoveEmptyFileSystems();
@@ -251,7 +274,7 @@ namespace GameFramework.Resource
                     }
                 }
             }
-
+            //c盘的 GameFrameworkVersion.dat
             private void OnLoadUpdatableVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
                 if (m_UpdatableVersionListReady)
@@ -364,7 +387,7 @@ namespace GameFramework.Resource
             {
                 throw new GameFrameworkException(Utility.Text.Format("Updatable version list '{0}' is invalid, error message is '{1}'.", fileUri, string.IsNullOrEmpty(errorMessage) ? "<Empty>" : errorMessage));
             }
-
+            // StreamingAssets
             private void OnLoadReadOnlyVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
                 if (m_ReadOnlyVersionListReady)
@@ -432,7 +455,7 @@ namespace GameFramework.Resource
                 m_ReadOnlyVersionListReady = true;
                 RefreshCheckInfoStatus();
             }
-
+            //c盘的    GameFrameworkList.dat   file:///C:/Users/Administrator/AppData/LocalLow/Game Framework/Star Force/GameFrameworkList.dat
             private void OnLoadReadWriteVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
                 if (m_ReadWriteVersionListReady)

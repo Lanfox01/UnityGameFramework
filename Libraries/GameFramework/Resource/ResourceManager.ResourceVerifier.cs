@@ -317,7 +317,7 @@ namespace GameFramework.Resource
 
                 File.Move(readWriteVersionListTempFileName, readWriteVersionListFileName);
             }
-
+            // 资源校验时候 读取到C盘 GameFrameworkList.dat 文件回调，  解压解密验证数据，是否正确； 并且拆分里面的 文件夹对象包，和 独立文件 
             private void OnLoadReadWriteVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
                 MemoryStream memoryStream = null;
@@ -352,7 +352,7 @@ namespace GameFramework.Resource
                         totalLength += resource.Length;
                         m_VerifyInfos.Add(new VerifyInfo(resourceName, fileSystemName, (LoadType)resource.LoadType, resource.Length, resource.HashCode));
                     }
-
+                    // 资源总和 长度？ 所有资源的验证文件信息？
                     m_LoadReadWriteVersionListComplete = true;
                     if (ResourceVerifyStart != null)
                     {
