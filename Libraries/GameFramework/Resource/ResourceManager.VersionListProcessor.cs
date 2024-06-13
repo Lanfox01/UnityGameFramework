@@ -14,7 +14,7 @@ namespace GameFramework.Resource
     internal sealed partial class ResourceManager : GameFrameworkModule, IResourceManager
     {
         /// <summary>
-        /// 版本资源列表处理器。
+        /// 版本资源列表处理器。 似乎对应 服务端 windowsVersion.txt
         /// </summary>
         private sealed class VersionListProcessor
         {
@@ -126,7 +126,7 @@ namespace GameFramework.Resource
             }
 
             /// <summary>
-            /// 更新版本资源列表。
+            /// 更新版本资源列表。 根据得到哈希值等 验算出服务器上GameFrameworkVersion的真实路径； 比如 GameFrameworkVersion.851e08b3.dat ；然后下载
             /// </summary>
             /// <param name="versionListLength">版本资源列表大小。</param>
             /// <param name="versionListHashCode">版本资源列表哈希值。</param>

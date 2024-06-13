@@ -20,7 +20,7 @@ namespace UnityGameFramework.Runtime
     {
         private const string SettingFileName = "GameFrameworkSetting.dat";
 
-        private string m_FilePath = null;
+        private string m_FilePath = null; //C:/Users/Administrator/AppData/LocalLow/Game Framework/Star Force/GameFrameworkSetting.dat
         private DefaultSetting m_Settings = null;
         private DefaultSettingSerializer m_Serializer = null;
 

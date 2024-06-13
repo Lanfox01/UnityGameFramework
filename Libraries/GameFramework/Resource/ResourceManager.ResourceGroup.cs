@@ -18,7 +18,7 @@ namespace GameFramework.Resource
         {
             private readonly string m_Name;
             private readonly Dictionary<ResourceName, ResourceInfo> m_ResourceInfos;
-            private readonly HashSet<ResourceName> m_ResourceNames;
+            private readonly HashSet<ResourceName> m_ResourceNames;// 所有的 .dat 文件 除了本地化语言变体？
             private long m_TotalLength;
             private long m_TotalCompressedLength;
 

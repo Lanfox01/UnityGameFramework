@@ -26,7 +26,7 @@ namespace GameFramework.Resource
         private const int FileSystemMaxFileCount = 1024 * 16;
         private const int FileSystemMaxBlockCount = 1024 * 256;
 
-        private Dictionary<string, AssetInfo> m_AssetInfos;
+        private Dictionary<string, AssetInfo> m_AssetInfos; // 存储所有的Asset资源
         private Dictionary<ResourceName, ResourceInfo> m_ResourceInfos;
         private SortedDictionary<ResourceName, ReadWriteResourceInfo> m_ReadWriteResourceInfos;
         private readonly Dictionary<string, IFileSystem> m_ReadOnlyFileSystems;

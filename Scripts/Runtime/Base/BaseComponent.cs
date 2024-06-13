@@ -232,7 +232,7 @@ namespace UnityGameFramework.Runtime
             GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
             //驱动所有模块的 update
             //GameFramework.Event.EventManager
-            Debug.Log("EditorResourceMode "+ EditorResourceMode);
+            // Debug.Log("EditorResourceMode "+ EditorResourceMode);
         }
 
         private void OnApplicationQuit()

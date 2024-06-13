@@ -19,7 +19,7 @@ namespace UnityGameFramework.Runtime
     public sealed class DefaultSetting
     {
         /// <summary>
-        ///  有个问题， m_Settings 值是哪里来的 ？
+        ///  有个问题， m_Settings 值是哪里来的 ？ 好像是关于游戏诸如声音 语言等设置信息，存储在 c盘 GameFrameworkSetting.dat
         /// </summary>
         private readonly SortedDictionary<string, string> m_Settings = new SortedDictionary<string, string>(StringComparer.Ordinal);
 

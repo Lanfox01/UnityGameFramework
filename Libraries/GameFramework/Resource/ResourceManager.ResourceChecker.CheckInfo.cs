@@ -21,7 +21,7 @@ namespace GameFramework.Resource
                 private bool m_NeedRemove;
                 private bool m_NeedMoveToDisk;
                 private bool m_NeedMoveToFileSystem;
-                private RemoteVersionInfo m_VersionInfo;
+                private RemoteVersionInfo m_VersionInfo;// 服务端资源版本信息
                 private LocalVersionInfo m_ReadOnlyInfo;
                 private LocalVersionInfo m_ReadWriteInfo;
                 private string m_CachedFileSystemName;
