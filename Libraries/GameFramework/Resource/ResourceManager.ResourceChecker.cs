@@ -9,6 +9,7 @@ using GameFramework.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace GameFramework.Resource
 {
@@ -20,7 +21,7 @@ namespace GameFramework.Resource
         private sealed partial class ResourceChecker
         {
             private readonly ResourceManager m_ResourceManager;
-            private readonly Dictionary<ResourceName, CheckInfo> m_CheckInfos;
+            private readonly Dictionary<ResourceName, CheckInfo> m_CheckInfos;//非常重要！！ 所加载到的 Resources包分别对应一个 CheckInfo元素，CheckInfo类主要存储了之后要被合并到的哪个文件名等
             private string m_CurrentVariant;
             private bool m_IgnoreOtherVariant;
             private bool m_UpdatableVersionListReady;
@@ -79,11 +80,13 @@ namespace GameFramework.Resource
                 }
 
                 m_CurrentVariant = currentVariant;
-                m_IgnoreOtherVariant = ignoreOtherVariant;// c盘的 GameFrameworkVersion.dat 和  GameFrameworkList.dat 以及 StreamingAssets 目录下的 GameFrameworkList.dat 全部读取出，然后验证在回到函数里面
+                m_IgnoreOtherVariant = ignoreOtherVariant;
+                // c盘的 GameFrameworkVersion.dat 和  GameFrameworkList.dat 以及 StreamingAssets 目录下的 GameFrameworkList.dat 全部读取出，然后验证在回到函数里面
+                Debug.Log("为什么 上面的 需要 连续加载 三个 文件？ ");
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadUpdatableVersionListSuccess, OnLoadUpdatableVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadOnlyVersionListSuccess, OnLoadReadOnlyVersionListFailure), null);
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadWritePath, LocalVersionListFileName)), new LoadBytesCallbacks(OnLoadReadWriteVersionListSuccess, OnLoadReadWriteVersionListFailure), null);
-            }
+            } 
 
             private void SetCachedFileSystemName(ResourceName resourceName, string fileSystemName)
             {
@@ -140,9 +143,9 @@ namespace GameFramework.Resource
                 foreach (KeyValuePair<ResourceName, CheckInfo> checkInfo in m_CheckInfos)
                 {
                     CheckInfo ci = checkInfo.Value;
-                    // 刷新资源状态
+                    // 刷新资源状态   主要是给它标记在是否需要给更新，以及 是否有久的文件存在 一会需要删除的？
                     ci.RefreshStatus(m_CurrentVariant, m_IgnoreOtherVariant);
-
+    
                     // 根据资源状态进行不同的处理
                     if (ci.Status == CheckInfo.CheckStatus.StorageInReadOnly)
                     {
@@ -297,6 +300,7 @@ namespace GameFramework.Resource
             //c盘的 GameFrameworkVersion.dat
             private void OnLoadUpdatableVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
+                Debug.Log("从 c盘 加载 GameFrameworkVersion.dat 成功");
                 if (m_UpdatableVersionListReady)
                 {
                     throw new GameFrameworkException("Updatable version list has been parsed.");
@@ -342,7 +346,7 @@ namespace GameFramework.Resource
                     {
                         if (resource.Variant != null && resource.Variant != m_CurrentVariant)
                         {
-                            continue;// 过滤掉 语言本地化， 中文变体之类
+                            continue;// 过滤掉 语言本地化， 中文变体之类；如果本地设置是中文，就加载中文资料，其他忽略
                         }
 
                         ResourceName resourceName = new ResourceName(resource.Name, resource.Variant, resource.Extension);
@@ -357,16 +361,16 @@ namespace GameFramework.Resource
                             {
                                 dependencyAssetNames[index++] = assets[dependencyAssetIndex].Name;
                             }
-
+                            // 字典存储管理 Asset 和 所在的 Resouce包关系
                             m_ResourceManager.m_AssetInfos.Add(asset.Name, new AssetInfo(asset.Name, resourceName, dependencyAssetNames));
                         }
-
+                        // 记录这个Reouces dat 包的基础信息，包括哈希值 和 加载途径等 包名等信息；
                         SetVersionInfo(resourceName, (LoadType)resource.LoadType, resource.Length, resource.HashCode, resource.CompressedLength, resource.CompressedHashCode);
                         defaultResourceGroup.AddResource(resourceName, resource.Length, resource.CompressedLength);
-                    }
+                    }    
 
                     foreach (UpdatableVersionList.ResourceGroup resourceGroup in resourceGroups)
-                    {
+                    {   // 这里新建 Base组 Music组， 这两组不重复  ；  以及上面的 defaultResourceGroup 有18个Dat？
                         ResourceGroup group = m_ResourceManager.GetOrAddResourceGroup(resourceGroup.Name);
                         int[] resourceIndexes = resourceGroup.GetResourceIndexes();
                         foreach (int resourceIndex in resourceIndexes)
@@ -405,11 +409,13 @@ namespace GameFramework.Resource
 
             private void OnLoadUpdatableVersionListFailure(string fileUri, string errorMessage, object userData)
             {
+                Debug.Log("从 c盘 加载 GameFrameworkVersion.dat 失败");
                 throw new GameFrameworkException(Utility.Text.Format("Updatable version list '{0}' is invalid, error message is '{1}'.", fileUri, string.IsNullOrEmpty(errorMessage) ? "<Empty>" : errorMessage));
             }
             // StreamingAssets   GameFrameworkList.dat
             private void OnLoadReadOnlyVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
+                Debug.Log("从 StreamingAssets 加载 GameFrameworkList.dat 成功");
                 if (m_ReadOnlyVersionListReady)
                 {
                     throw new GameFrameworkException("Read-only version list has been parsed.");
@@ -467,6 +473,7 @@ namespace GameFramework.Resource
 
             private void OnLoadReadOnlyVersionListFailure(string fileUri, string errorMessage, object userData)
             {
+                Debug.Log("从 StreamingAssets 加载 GameFrameworkList.dat 失败");
                 if (m_ReadOnlyVersionListReady)
                 {
                     throw new GameFrameworkException("Read-only version list has been parsed.");
@@ -478,6 +485,7 @@ namespace GameFramework.Resource
             //c盘的    GameFrameworkList.dat   file:///C:/Users/Administrator/AppData/LocalLow/Game Framework/Star Force/GameFrameworkList.dat
             private void OnLoadReadWriteVersionListSuccess(string fileUri, byte[] bytes, float duration, object userData)
             {
+                Debug.Log("从 c盘的 加载 GameFrameworkList.dat 成功");
                 if (m_ReadWriteVersionListReady)
                 {
                     throw new GameFrameworkException("Read-write version list has been parsed.");
@@ -535,6 +543,7 @@ namespace GameFramework.Resource
 
             private void OnLoadReadWriteVersionListFailure(string fileUri, string errorMessage, object userData)
             {
+                Debug.Log("从 c盘的 加载 GameFrameworkList.dat 失败");
                 if (m_ReadWriteVersionListReady)
                 {
                     throw new GameFrameworkException("Read-write version list has been parsed.");

@@ -27,7 +27,7 @@ namespace GameFramework.Resource
         private const int FileSystemMaxBlockCount = 1024 * 256;
 
         private Dictionary<string, AssetInfo> m_AssetInfos; // 存储所有的Asset资源
-        private Dictionary<ResourceName, ResourceInfo> m_ResourceInfos;
+        private Dictionary<ResourceName, ResourceInfo> m_ResourceInfos; // 这里的资源似乎是 Reousce 资源 并且好像是需要等待下载的资源？
         private SortedDictionary<ResourceName, ReadWriteResourceInfo> m_ReadWriteResourceInfos;
         private readonly Dictionary<string, IFileSystem> m_ReadOnlyFileSystems;
         private readonly Dictionary<string, IFileSystem> m_ReadWriteFileSystems;
@@ -1315,7 +1315,7 @@ namespace GameFramework.Resource
             {
                 throw new GameFrameworkException("You can not use UpdateResources at this time.");
             }
-
+            // resourceGroupName 传入为空 为什么 可以 返回全部？ 返回是 第0个数组，也就是默认的 defaultGroup 里面基本上都是全部要下载的资源
             ResourceGroup resourceGroup = (ResourceGroup)GetResourceGroup(resourceGroupName);
             if (resourceGroup == null)
             {

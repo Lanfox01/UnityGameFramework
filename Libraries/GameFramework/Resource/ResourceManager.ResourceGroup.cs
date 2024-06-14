@@ -252,7 +252,7 @@ namespace GameFramework.Resource
             }
 
             /// <summary>
-            /// 向资源组中增加资源。
+            /// 向资源组中增加资源。 并且可能更具这里的总长度来设计加载进度
             /// </summary>
             /// <param name="resourceName">资源名称。</param>
             /// <param name="length">资源大小。</param>

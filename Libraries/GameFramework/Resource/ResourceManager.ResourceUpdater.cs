@@ -25,9 +25,9 @@ namespace GameFramework.Resource
 
             private readonly ResourceManager m_ResourceManager;
             private readonly Queue<ApplyInfo> m_ApplyWaitingInfo;
-            private readonly List<UpdateInfo> m_UpdateWaitingInfo;
+            private readonly List<UpdateInfo> m_UpdateWaitingInfo;//等待下载的资源队列
             private readonly HashSet<UpdateInfo> m_UpdateWaitingInfoWhilePlaying;
-            private readonly Dictionary<ResourceName, UpdateInfo> m_UpdateCandidateInfo;
+            private readonly Dictionary<ResourceName, UpdateInfo> m_UpdateCandidateInfo;//这个似乎是 需要下载升级的 资源 集合
             private readonly SortedDictionary<string, List<int>> m_CachedFileSystemsForGenerateReadWriteVersionList;
             private readonly List<ResourceName> m_CachedResourceNames;
             private readonly byte[] m_CachedHashBytes;
@@ -420,7 +420,7 @@ namespace GameFramework.Resource
                 {
                     throw new GameFrameworkException(Utility.Text.Format("There is already a resource group '{0}' being updated.", m_UpdatingResourceGroup.Name));
                 }
-
+                // 空名字 就是默认的资源组，全部下载了？ m_UpdateCandidateInfo 有什么 
                 if (string.IsNullOrEmpty(resourceGroup.Name))
                 {
                     foreach (KeyValuePair<ResourceName, UpdateInfo> updateInfo in m_UpdateCandidateInfo)
@@ -669,7 +669,7 @@ namespace GameFramework.Resource
                 {
                     return false;
                 }
-
+                // 加入下载队列之前 需要对具体的下载地址 解密 
                 updateInfo.Downloading = true;
                 string resourceFullNameWithCrc32 = updateInfo.ResourceName.Variant != null ? Utility.Text.Format("{0}.{1}.{2:x8}.{3}", updateInfo.ResourceName.Name, updateInfo.ResourceName.Variant, updateInfo.HashCode, DefaultExtension) : Utility.Text.Format("{0}.{1:x8}.{2}", updateInfo.ResourceName.Name, updateInfo.HashCode, DefaultExtension);
                 m_DownloadManager.AddDownload(updateInfo.ResourcePath, Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_UpdatePrefixUri, resourceFullNameWithCrc32)), updateInfo);
