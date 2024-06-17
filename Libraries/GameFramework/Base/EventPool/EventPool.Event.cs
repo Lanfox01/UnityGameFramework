@@ -13,7 +13,7 @@ namespace GameFramework
         /// 事件结点。
         /// </summary>
         private sealed class Event : IReference
-        {
+        { 
             private object m_Sender;
             private T m_EventArgs;
 

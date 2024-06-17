@@ -170,6 +170,7 @@ namespace GameFramework.Resource
                             {
                                 IFileSystem fileSystem =
                                     m_ResourceManager.GetFileSystem(ci.ReadWriteFileSystemName, false);
+                                Debug.Log("ci.NeedMoveToDisk: "+resourceFullName );
                                 if (!fileSystem.SaveAsFile(resourceFullName, resourcePath))
                                 {
                                     throw new GameFrameworkException(Utility.Text.Format(
@@ -185,6 +186,7 @@ namespace GameFramework.Resource
                             if (ci.NeedMoveToFileSystem)
                             {
                                 IFileSystem fileSystem = m_ResourceManager.GetFileSystem(ci.FileSystemName, false);
+                                Debug.Log("ci.NeedMoveToFileSystem 写入文件： "+ resourceFullName);
                                 if (!fileSystem.WriteFile(resourceFullName, resourcePath))
                                 {
                                     throw new GameFrameworkException(Utility.Text.Format(

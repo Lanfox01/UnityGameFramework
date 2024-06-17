@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace GameFramework.FileSystem
 {
@@ -138,6 +139,7 @@ namespace GameFramework.FileSystem
         /// <returns>创建的文件系统。</returns>
         public static FileSystem Create(string fullPath, FileSystemAccess access, FileSystemStream stream, int maxFileCount, int maxBlockCount)
         {
+            Debug.Log(fullPath);
             if (maxFileCount <= 0)
             {
                 throw new GameFrameworkException("Max file count is invalid.");
@@ -771,6 +773,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, byte[] buffer)
         {
+            Debug.Log(name);
             if (buffer == null)
             {
                 throw new GameFrameworkException("Buffer is invalid.");
@@ -788,6 +791,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, byte[] buffer, int startIndex)
         {
+            Debug.Log(name);
             if (buffer == null)
             {
                 throw new GameFrameworkException("Buffer is invalid.");
@@ -806,6 +810,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, byte[] buffer, int startIndex, int length)
         {
+            Debug.Log(name);
             if (m_Access != FileSystemAccess.Write && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not writable.");
@@ -868,6 +873,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, Stream stream)
         {
+            Debug.Log(name);
             if (m_Access != FileSystemAccess.Write && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not writable.");
@@ -931,6 +937,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否写入指定文件成功。</returns>
         public bool WriteFile(string name, string filePath)
         {
+            Debug.Log(name);
             if (string.IsNullOrEmpty(filePath))
             {
                 throw new GameFrameworkException("File path is invalid");
@@ -955,6 +962,7 @@ namespace GameFramework.FileSystem
         /// <returns>是否将指定文件另存为物理文件成功。</returns>
         public bool SaveAsFile(string name, string filePath)
         {
+            Debug.Log(name);
             if (m_Access != FileSystemAccess.Read && m_Access != FileSystemAccess.ReadWrite)
             {
                 throw new GameFrameworkException("File system is not readable.");

@@ -7,6 +7,8 @@
 
 using System;
 using System.IO;
+using UnityEngine;
+using UnityEngine.WSA;
 
 namespace GameFramework.FileSystem
 {
@@ -111,6 +113,9 @@ namespace GameFramework.FileSystem
         /// <param name="length">存储写入文件内容的二进制流的长度。</param>
         protected internal void Write(Stream stream, int length)
         {
+            FileStream fs = stream as FileStream;
+             if(fs!=null)
+                 Debug.Log(fs.Name);
             int bytesRead = 0;
             int bytesLeft = length;
             while ((bytesRead = stream.Read(s_CachedBytes, 0, bytesLeft < CachedBytesLength ? bytesLeft : CachedBytesLength)) > 0)

@@ -10,6 +10,7 @@ using GameFramework.FileSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace GameFramework.Resource
 {
@@ -605,7 +606,8 @@ namespace GameFramework.Resource
                     if (applyInfo.UseFileSystem)
                     {
                         IFileSystem fileSystem = m_ResourceManager.GetFileSystem(applyInfo.FileSystemName, false);
-                        bool retVal = fileSystem.WriteFile(applyInfo.ResourceName.FullName, applyInfo.ResourcePath);
+                        bool retVal = fileSystem.WriteFile(applyInfo.ResourceName.FullName, applyInfo.ResourcePath); 
+                        Debug.Log("applyInfo.UseFileSystem写入文件： "+ applyInfo.ResourceName.FullName);
                         if (File.Exists(applyInfo.ResourcePath))
                         {
                             File.Delete(applyInfo.ResourcePath);
@@ -748,10 +750,12 @@ namespace GameFramework.Resource
 
                 if (File.Exists(m_ReadWriteVersionListFileName))
                 {
+                    Debug.Log("GenerateReadWriteVersionList 删除文件 "+m_ReadWriteVersionListFileName  );
                     File.Delete(m_ReadWriteVersionListFileName);
                 }
 
                 File.Move(m_ReadWriteVersionListTempFileName, m_ReadWriteVersionListFileName);
+                Debug.Log(m_ReadWriteVersionListTempFileName + " 重命名或位移  "+  m_ReadWriteVersionListFileName);
                 m_CurrentGenerateReadWriteVersionListLength = 0;
             }
 
@@ -798,6 +802,7 @@ namespace GameFramework.Resource
                     string downloadFile = Utility.Text.Format("{0}.download", e.DownloadPath);
                     if (File.Exists(downloadFile))
                     {
+                        Debug.Log("删除文件"+downloadFile);
                         File.Delete(downloadFile);
                     }
 
@@ -920,8 +925,10 @@ namespace GameFramework.Resource
                     {
                         IFileSystem fileSystem = m_ResourceManager.GetFileSystem(updateInfo.FileSystemName, false);
                         bool retVal = fileSystem.WriteFile(updateInfo.ResourceName.FullName, updateInfo.ResourcePath);
+                        Debug.Log("updateInfo.UseFileSystem 写入文件： "+ updateInfo.ResourceName);
                         if (File.Exists(updateInfo.ResourcePath))
                         {
+                            Debug.Log("updateInfo.UseFileSystem 删除文件 "+ updateInfo.ResourcePath);
                             File.Delete(updateInfo.ResourcePath);
                         }
 

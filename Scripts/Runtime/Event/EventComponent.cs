@@ -63,7 +63,7 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 获取事件处理函数的数量。
+        /// 获取某具体事件处理函数的数量。
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <returns>事件处理函数的数量。</returns>

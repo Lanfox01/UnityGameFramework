@@ -133,7 +133,7 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 订阅事件处理函数。
+        /// 订阅事件处理函数。  基本上 T = GameEventArgs
         /// </summary>
         /// <param name="id">事件类型编号。</param>
         /// <param name="handler">要订阅的事件处理函数。</param>
@@ -148,17 +148,21 @@ namespace GameFramework
             {
                 m_EventHandlers.Add(id, handler);
             }
+            // 如果存在，则进行以下检查  
+  
+            // 检查是否允许多个处理器订阅同一个事件  
             else if ((m_EventPoolMode & EventPoolMode.AllowMultiHandler) != EventPoolMode.AllowMultiHandler)
-            {
+            {   // 如果不允许，则抛出异常  
                 throw new GameFrameworkException(Utility.Text.Format("Event '{0}' not allow multi handler.", id));
-            }
+            }  
             else if ((m_EventPoolMode & EventPoolMode.AllowDuplicateHandler) != EventPoolMode.AllowDuplicateHandler && Check(id, handler))
-            {
+            {    // 如果允许多个处理器，但不允许重复处理器  
                 throw new GameFrameworkException(Utility.Text.Format("Event '{0}' not allow duplicate handler.", id));
             }
             else
-            {
-                m_EventHandlers.Add(id, handler);
+            { // 如果允许多个处理器，并且处理器不重复，或者允许重复处理器  
+                // 则将新的处理器添加到事件处理器列表中（注意这里其实有逻辑冗余，因为前面已经检查过不允许多个处理器的情况）  
+                m_EventHandlers.Add(id, handler);// 这里可能是一个逻辑错误，因为理论上如果允许多个处理器，它应该添加到列表中，而不是直接替换
             }
         }
 
