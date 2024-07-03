@@ -15,7 +15,7 @@ namespace GameFramework.Fsm
     /// </summary>
     internal sealed class FsmManager : GameFrameworkModule, IFsmManager
     {
-        private readonly Dictionary<TypeNamePair, FsmBase> m_Fsms;
+        private readonly Dictionary<TypeNamePair, FsmBase> m_Fsms; // 貌似只有一组健值対，表示本游戏只用到一套状态机系统！
         private readonly List<FsmBase> m_TempFsms;
 
         /// <summary>

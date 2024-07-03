@@ -114,7 +114,7 @@ namespace GameFramework
         /// <returns>是否序列化数据成功。</returns>
         public bool Serialize(Stream stream, T data)
         {
-            Debug.Log("序列化数据到目标流中 stream" + stream);
+            // Debug.Log("序列化数据到目标流中 stream" + stream);
             FileStream fs = stream as FileStream;  
             if (fs != null)  
                 Debug.Log("序列化数据到目标流 :"  + fs.Name);// 后续都是 GameFrameworkList 文件？

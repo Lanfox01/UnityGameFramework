@@ -11,7 +11,8 @@ using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedure
 namespace GameFramework.Procedure
 {
     /// <summary>
-    /// 流程基类。
+    /// 流程基类。ProcedureBase 本质上 是一个 FSM 状态类，但它特化为处理 IProcedureManager 类型的对象。
+    /// 通过这种方式，ProcedureBase 可以直接使用 IProcedureManager 的方法和属性来管理流程。
     /// </summary>
     public abstract class ProcedureBase : FsmState<IProcedureManager>
     {

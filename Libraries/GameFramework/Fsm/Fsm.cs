@@ -125,7 +125,7 @@ namespace GameFramework.Fsm
         }
 
         /// <summary>
-        /// 创建有限状态机。
+        /// 创建有限状态机。  好像是走这个方法？
         /// </summary>
         /// <param name="name">有限状态机名称。</param>
         /// <param name="owner">有限状态机持有者。</param>
