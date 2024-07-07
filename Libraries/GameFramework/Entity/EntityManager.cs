@@ -1241,6 +1241,13 @@ namespace GameFramework.Entity
             m_RecycleQueue.Enqueue(entityInfo);
         }
 
+        /*
+        如果资源在加载过程中需要释放，则进行释放操作。
+        移除记录的加载状态。
+        创建和实例化加载的实体对象。
+        将实体对象注册到指定的组。
+        最终显示实体，并释放加载信息对象。
+        */
         private void LoadAssetSuccessCallback(string entityAssetName, object entityAsset, float duration, object userData)
         {
             ShowEntityInfo showEntityInfo = (ShowEntityInfo)userData;

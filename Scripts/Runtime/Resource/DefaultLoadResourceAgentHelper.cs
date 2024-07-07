@@ -527,23 +527,29 @@ namespace UnityGameFramework.Runtime
             }
         }
 
+        /*
+         * 这个方法是资源加载系统的一部分，用于定期检查 AssetBundleRequest 的状态。
+         * 它处理了资源加载成功、失败和进度更新的不同情况，并通过事件机制将这些状态传递给其他系统组件。
+         * 这个方法通常会在主循环中被调用，确保及时响应资源加载的状态变化。
+         */
         private void UpdateAssetBundleRequest()
-        {
+        {   // 检查是否有正在进行的 AssetBundleRequest
             if (m_AssetBundleRequest != null)
-            {
+            {   // 如果请求已完成
                 if (m_AssetBundleRequest.isDone)
-                {
+                {    // 如果加载到的资源不为空，处理成功加载
                     if (m_AssetBundleRequest.asset != null)
                     {
                         LoadResourceAgentHelperLoadCompleteEventArgs loadResourceAgentHelperLoadCompleteEventArgs = LoadResourceAgentHelperLoadCompleteEventArgs.Create(m_AssetBundleRequest.asset);
                         m_LoadResourceAgentHelperLoadCompleteEventHandler(this, loadResourceAgentHelperLoadCompleteEventArgs);
                         ReferencePool.Release(loadResourceAgentHelperLoadCompleteEventArgs);
+                        // 清理相关状态
                         m_AssetName = null;
                         m_LastProgress = 0f;
                         m_AssetBundleRequest = null;
                     }
                     else
-                    {
+                    {    // 如果加载到的资源为空，处理加载错误
                         LoadResourceAgentHelperErrorEventArgs loadResourceAgentHelperErrorEventArgs = LoadResourceAgentHelperErrorEventArgs.Create(LoadResourceStatus.AssetError, Utility.Text.Format("Can not load asset '{0}' from asset bundle which is not exist.", m_AssetName));
                         m_LoadResourceAgentHelperErrorEventHandler(this, loadResourceAgentHelperErrorEventArgs);
                         ReferencePool.Release(loadResourceAgentHelperErrorEventArgs);
@@ -551,6 +557,7 @@ namespace UnityGameFramework.Runtime
                 }
                 else if (m_AssetBundleRequest.progress != m_LastProgress)
                 {
+                    // 如果加载进度发生变化
                     m_LastProgress = m_AssetBundleRequest.progress;
                     LoadResourceAgentHelperUpdateEventArgs loadResourceAgentHelperUpdateEventArgs = LoadResourceAgentHelperUpdateEventArgs.Create(LoadResourceProgress.LoadAsset, m_AssetBundleRequest.progress);
                     m_LoadResourceAgentHelperUpdateEventHandler(this, loadResourceAgentHelperUpdateEventArgs);
