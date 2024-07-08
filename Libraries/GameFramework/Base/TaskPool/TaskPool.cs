@@ -422,7 +422,7 @@ namespace GameFramework
                 StartTaskStatus status = agent.Start(task); //这里是表示代理器开始代理任务？ 开始处理加载资源任务。
                 if (status == StartTaskStatus.Done || status == StartTaskStatus.HasToWait || status == StartTaskStatus.UnknownError)
                 {
-                    agent.Reset();
+                    agent.Reset(); // 表示加载完毕？ 然后释放代理器？
                     m_FreeAgents.Push(agent);
                     m_WorkingAgents.Remove(agentNode);
                 }
