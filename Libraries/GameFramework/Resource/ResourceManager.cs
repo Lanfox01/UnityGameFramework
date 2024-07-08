@@ -27,7 +27,7 @@ namespace GameFramework.Resource
         private const int FileSystemMaxBlockCount = 1024 * 256;
 
         private Dictionary<string, AssetInfo> m_AssetInfos; // 存储所有的Asset资源
-        private Dictionary<ResourceName, ResourceInfo> m_ResourceInfos; // 这里的资源似乎是 Reousce 资源 并且好像是需要等待下载的资源？
+        private Dictionary<ResourceName, ResourceInfo> m_ResourceInfos; // 这里的资源似乎是 Reousce 资源 大的文件物理包。18个 并且好像是需要等待下载的资源？
         private SortedDictionary<ResourceName, ReadWriteResourceInfo> m_ReadWriteResourceInfos;
         private readonly Dictionary<string, IFileSystem> m_ReadOnlyFileSystems;
         private readonly Dictionary<string, IFileSystem> m_ReadWriteFileSystems;
@@ -2251,7 +2251,7 @@ namespace GameFramework.Resource
 
             return resourceGroup;
         }
-
+       // 核对的是资源路径 索引吧？ 真正的资源到底放在哪里？真的已经被打包压缩在 .dat文件？
         private AssetInfo GetAssetInfo(string assetName)
         {
             if (string.IsNullOrEmpty(assetName))

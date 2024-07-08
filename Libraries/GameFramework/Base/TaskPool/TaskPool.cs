@@ -91,7 +91,7 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 任务池轮询。
+        /// 任务池轮询。  这里才是真正做持续性工作的地方，比如加载资源？
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
@@ -390,36 +390,36 @@ namespace GameFramework
 
         private void ProcessRunningTasks(float elapseSeconds, float realElapseSeconds)
         {
-            LinkedListNode<ITaskAgent<T>> current = m_WorkingAgents.First;
-            while (current != null)
+            LinkedListNode<ITaskAgent<T>> current = m_WorkingAgents.First;//获取链表的第一个节点
+            while (current != null)  // 遍历  m_WorkingAgents 链表
             {
                 T task = current.Value.Task;
-                if (!task.Done)
+                if (!task.Done)  // 对于每个任务代理  检查这个任务是否完成（!task.Done）
                 {
-                    current.Value.Update(elapseSeconds, realElapseSeconds);
+                    current.Value.Update(elapseSeconds, realElapseSeconds); //未完成的 更新任务的状态 是不是继续让他执行任务？
                     current = current.Next;
                     continue;
                 }
-
+                // 任务完成的 换下个节点来；
                 LinkedListNode<ITaskAgent<T>> next = current.Next;
-                current.Value.Reset();
-                m_FreeAgents.Push(current.Value);
-                m_WorkingAgents.Remove(current);
-                ReferencePool.Release(task);
+                current.Value.Reset();   // 具体的任务代理器 重置 初始化； 为以后的其他任务做准备
+                m_FreeAgents.Push(current.Value); // 完成的任务代理器 调到 空闲队列
+                m_WorkingAgents.Remove(current); //  从未完成队列 调出 
+                ReferencePool.Release(task);  // 应用池中 释放该具体点 任务引用，
                 current = next;
             }
         }
-
+        //处理等待队列中的任务，并将它们分配给空闲的任务代理（ITaskAgent<T>）来执行
         private void ProcessWaitingTasks(float elapseSeconds, float realElapseSeconds)
         {
             LinkedListNode<T> current = m_WaitingTasks.First;
-            while (current != null && FreeAgentCount > 0)
+            while (current != null && FreeAgentCount > 0) // 当还有任务在排队，并且有空的任务代理器时候
             {
                 ITaskAgent<T> agent = m_FreeAgents.Pop();
-                LinkedListNode<ITaskAgent<T>> agentNode = m_WorkingAgents.AddLast(agent);
+                LinkedListNode<ITaskAgent<T>> agentNode = m_WorkingAgents.AddLast(agent); //从空闲代理器中调取一个 加入到工作代理器队列
                 T task = current.Value;
                 LinkedListNode<T> next = current.Next;
-                StartTaskStatus status = agent.Start(task);
+                StartTaskStatus status = agent.Start(task); //这里是表示代理器开始代理任务？ 开始处理加载资源任务。
                 if (status == StartTaskStatus.Done || status == StartTaskStatus.HasToWait || status == StartTaskStatus.UnknownError)
                 {
                     agent.Reset();

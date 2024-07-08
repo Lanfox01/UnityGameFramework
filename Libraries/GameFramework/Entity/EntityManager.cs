@@ -1158,38 +1158,45 @@ namespace GameFramework.Entity
 
             return null;
         }
-
+        // 私有方法，用于内部展示一个实体
         private void InternalShowEntity(int entityId, string entityAssetName, EntityGroup entityGroup, object entityInstance, bool isNewInstance, float duration, object userData)
         {
             try
-            {
+            {   // 使用实体辅助器（EntityHelper）根据提供的实体实例、实体组和用户数据创建一个实体
                 IEntity entity = m_EntityHelper.CreateEntity(entityInstance, entityGroup, userData);
                 if (entity == null)
-                {
+                {// 如果实体创建失败（即返回null）   抛出异常，说明在实体辅助器中无法创建实体  
                     throw new GameFrameworkException("Can not create entity in entity helper.");
                 }
-
+                // 创建一个实体信息对象，并存储实体信息  
                 EntityInfo entityInfo = EntityInfo.Create(entity);
+                // 将实体信息添加到实体信息集合中，以实体ID为键  
                 m_EntityInfos.Add(entityId, entityInfo);
+                // 设置实体状态为将要初始化  
                 entityInfo.Status = EntityStatus.WillInit;
+                // 调用实体的初始化方法  
                 entity.OnInit(entityId, entityAssetName, entityGroup, isNewInstance, userData);
+                // 实体初始化完成后，更新状态为已初始化  
                 entityInfo.Status = EntityStatus.Inited;
+                // 将实体添加到所属的实体组中  
                 entityGroup.AddEntity(entity);
+                // 更新实体状态为将要展示  
                 entityInfo.Status = EntityStatus.WillShow;
                 entity.OnShow(userData);
+                // 实体展示完成后，更新状态为已展示 
                 entityInfo.Status = EntityStatus.Showed;
-
+                // 如果定义了展示实体成功的事件处理器  
                 if (m_ShowEntitySuccessEventHandler != null)
-                {
+                {  // 创建一个展示实体成功的事件参数对象 
                     ShowEntitySuccessEventArgs showEntitySuccessEventArgs = ShowEntitySuccessEventArgs.Create(entity, duration, userData);
-                    m_ShowEntitySuccessEventHandler(this, showEntitySuccessEventArgs);
-                    ReferencePool.Release(showEntitySuccessEventArgs);
+                    m_ShowEntitySuccessEventHandler(this, showEntitySuccessEventArgs); // 触发展示实体成功的事件  
+                    ReferencePool.Release(showEntitySuccessEventArgs);// 释放事件参数对象到引用池  
                 }
             }
             catch (Exception exception)
-            {
+            {   // 如果捕获到异常，且定义了展示实体失败的事件处理器  
                 if (m_ShowEntityFailureEventHandler != null)
-                {
+                {   // 创建一个展示实体失败的事件参数对象，包含失败信息  
                     ShowEntityFailureEventArgs showEntityFailureEventArgs = ShowEntityFailureEventArgs.Create(entityId, entityAssetName, entityGroup.Name, exception.ToString(), userData);
                     m_ShowEntityFailureEventHandler(this, showEntityFailureEventArgs);
                     ReferencePool.Release(showEntityFailureEventArgs);

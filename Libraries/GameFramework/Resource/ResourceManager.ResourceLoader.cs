@@ -296,7 +296,7 @@ namespace GameFramework.Resource
             }
 
             /// <summary>
-            /// 异步加载资源。
+            /// 异步加载资源。处理加载游戏资源的过程，包括检查资源是否存在、是否为二进制资源、加载依赖资源等步骤。
             /// </summary>
             /// <param name="assetName">要加载资源的名称。</param>
             /// <param name="assetType">要加载资源的类型。</param>
@@ -307,6 +307,7 @@ namespace GameFramework.Resource
             {
                 ResourceInfo resourceInfo = null;
                 string[] dependencyAssetNames = null;
+                //检查资源是否存在 并获取资源的ResourceInfo和依赖资源的名称列表
                 if (!CheckAsset(assetName, out resourceInfo, out dependencyAssetNames))
                 {
                     string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
@@ -318,7 +319,7 @@ namespace GameFramework.Resource
 
                     throw new GameFrameworkException(errorMessage);
                 }
-
+                // 如果资源是一个二进制资源
                 if (resourceInfo.IsLoadFromBinary)
                 {
                     string errorMessage = Utility.Text.Format("Can not load asset '{0}' which is a binary asset.", assetName);
@@ -330,7 +331,7 @@ namespace GameFramework.Resource
 
                     throw new GameFrameworkException(errorMessage);
                 }
-
+                //您创建了一个LoadAssetTask来加载主资源。这是异步加载的核心步骤
                 LoadAssetTask mainTask = LoadAssetTask.Create(assetName, assetType, priority, resourceInfo, dependencyAssetNames, loadAssetCallbacks, userData);
                 foreach (string dependencyAssetName in dependencyAssetNames)
                 {
@@ -802,7 +803,7 @@ namespace GameFramework.Resource
             {
                 m_TaskPool.GetAllTaskInfos(results);
             }
-
+            // 为每个依赖资源创建并启动加载任务
             private bool LoadDependencyAsset(string assetName, int priority, LoadResourceTaskBase mainTask, object userData)
             {
                 if (mainTask == null)
@@ -855,7 +856,7 @@ namespace GameFramework.Resource
 
                 return m_ResourceManager.GetResourceInfo(assetInfo.ResourceName);
             }
-
+            //  检查资源是否存在  两个概念区分下  Asset Info 和  Resource Info ；前者是具体的某个小资源， 后者是一个大包；
             private bool CheckAsset(string assetName, out ResourceInfo resourceInfo, out string[] dependencyAssetNames)
             {
                 resourceInfo = null;

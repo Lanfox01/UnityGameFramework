@@ -150,21 +150,21 @@ namespace GameFramework.Resource
                     m_Task = task;
                     m_Task.StartTime = DateTime.UtcNow;
                     ResourceInfo resourceInfo = m_Task.ResourceInfo;
-
+                    
                     if (!resourceInfo.Ready)
-                    {
+                    {//如果资源未准备好，则重置任务的开始时间为默认值
                         m_Task.StartTime = default(DateTime);
-                        return StartTaskStatus.HasToWait;
+                        return StartTaskStatus.HasToWait; //表示任务需要等待资源准备完成。
                     }
 
                     if (IsAssetLoading(m_Task.AssetName))
-                    {
+                    {   //如果资源已准备好
                         m_Task.StartTime = default(DateTime);
                         return StartTaskStatus.HasToWait;
                     }
-
+                    //如果任务不是加载场景
                     if (!m_Task.IsScene)
-                    {
+                    {//尝试从资源加载器的资产池中生成（或加载）指定的资产对象
                         AssetObject assetObject = m_ResourceLoader.m_AssetPool.Spawn(m_Task.AssetName);
                         if (assetObject != null)
                         {
@@ -172,7 +172,7 @@ namespace GameFramework.Resource
                             return StartTaskStatus.Done;
                         }
                     }
-
+                    // assetObject == null   s_CachedResourceNames 
                     foreach (string dependencyAssetName in m_Task.GetDependencyAssetNames())
                     {
                         if (!m_ResourceLoader.m_AssetPool.CanSpawn(dependencyAssetName))
@@ -206,7 +206,7 @@ namespace GameFramework.Resource
                         fullPath = Utility.Path.GetRegularPath(Path.Combine(resourceInfo.StorageInReadOnly ? m_ReadOnlyPath : m_ReadWritePath, resourceInfo.UseFileSystem ? resourceInfo.FileSystemName : resourceInfo.ResourceName.FullName));
                         s_CachedResourceNames.Add(resourceName, fullPath);
                     }
-
+                    // 根据资源加载方式 加载  读取文件吗？
                     if (resourceInfo.LoadType == LoadType.LoadFromFile)
                     {
                         if (resourceInfo.UseFileSystem)
