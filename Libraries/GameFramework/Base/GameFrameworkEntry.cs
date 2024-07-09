@@ -27,7 +27,8 @@ namespace GameFramework
         {
             foreach (GameFrameworkModule module in s_GameFrameworkModules)
             {
-                // Debug.Log("GameFrameworkModule 's Update  "+module.GetType().FullName);
+                  Debug.Log("GameFrameworkModule 's Update  "+module.GetType().FullName);
+                 // Debug.Log("GameFrameworkModule 's Priority  "+module.Priority);
                 /* 包括 如下模块：
                  *  虽然很多模块都有重写 update(),                                       但是，只有部分有这个函数体代码；、
                  *  GameFramework.Event.EventManager                                 有  事件管理
@@ -121,7 +122,8 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 创建游戏框架模块。
+        /// 创建游戏框架模块。  按照优先级顺序插入到一个名为s_GameFrameworkModules的双向链表
+        /// 这段代码实现了一个动态创建模块实例并将其按照优先级顺序插入到链表中的功能，这对于游戏框架中管理不同模块（如游戏逻辑、资源管理、UI管理等）的初始化顺序非常有用。
         /// </summary>
         /// <param name="moduleType">要创建的游戏框架模块类型。</param>
         /// <returns>要创建的游戏框架模块。</returns>
@@ -132,7 +134,7 @@ namespace GameFramework
             {
                 throw new GameFrameworkException(Utility.Text.Format("Can not create module '{0}'.", moduleType.FullName));
             }
-
+            
             LinkedListNode<GameFrameworkModule> current = s_GameFrameworkModules.First;
             while (current != null)
             {
@@ -152,7 +154,7 @@ namespace GameFramework
             {
                 s_GameFrameworkModules.AddLast(module);
             }
-
+            Debug.Log( module.GetType().FullName+ "  's Priority  "+module.Priority);
             return module;
         }
     }

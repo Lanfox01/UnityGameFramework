@@ -10,7 +10,7 @@ using System;
 namespace GameFramework.Event
 {
     /// <summary>
-    /// 事件管理器接口。
+    /// 事件管理器接口。 有且只有一个派生子类
     /// </summary>
     public interface IEventManager
     {

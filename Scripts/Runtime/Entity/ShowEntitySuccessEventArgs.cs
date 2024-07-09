@@ -17,7 +17,7 @@ namespace UnityGameFramework.Runtime
     public sealed class ShowEntitySuccessEventArgs : GameEventArgs
     {
         /// <summary>
-        /// 显示实体成功事件编号。
+        /// 显示实体成功事件编号。 只要是整数；并且是唯一编，不重复；
         /// </summary>
         public static readonly int EventId = typeof(ShowEntitySuccessEventArgs).GetHashCode();
 

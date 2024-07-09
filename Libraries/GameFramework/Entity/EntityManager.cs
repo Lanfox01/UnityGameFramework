@@ -22,7 +22,7 @@ namespace GameFramework.Entity
         private readonly Dictionary<int, int> m_EntitiesBeingLoaded;
         private readonly HashSet<int> m_EntitiesToReleaseOnLoad;
         private readonly Queue<EntityInfo> m_RecycleQueue;
-        private readonly LoadAssetCallbacks m_LoadAssetCallbacks;
+        private readonly LoadAssetCallbacks m_LoadAssetCallbacks; //想知道 是否所有的 加载回调 到会调用这里？
         private IObjectPoolManager m_ObjectPoolManager;
         private IResourceManager m_ResourceManager;
         private IEntityHelper m_EntityHelper;

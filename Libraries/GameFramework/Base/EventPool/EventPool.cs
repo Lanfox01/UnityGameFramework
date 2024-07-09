@@ -16,7 +16,7 @@ namespace GameFramework
     /// <typeparam name="T">事件类型。</typeparam>
     internal sealed partial class EventPool<T> where T : BaseEventArgs
     {
-        private readonly GameFrameworkMultiDictionary<int, EventHandler<T>> m_EventHandlers;
+        private readonly GameFrameworkMultiDictionary<int, EventHandler<T>> m_EventHandlers; //所以注册进来的 处理函数参数id， 处理函数
         private readonly Queue<Event> m_Events;
         private readonly Dictionary<object, LinkedListNode<EventHandler<T>>> m_CachedNodes;
         private readonly Dictionary<object, LinkedListNode<EventHandler<T>>> m_TempNodes;
@@ -177,14 +177,14 @@ namespace GameFramework
             {
                 throw new GameFrameworkException("Event handler is invalid.");
             }
-
+            // 这里的代码什么意思？ 本质上只要移除m_EventHandlers 的元素就可以吧？
             if (m_CachedNodes.Count > 0)
             {
                 foreach (KeyValuePair<object, LinkedListNode<EventHandler<T>>> cachedNode in m_CachedNodes)
                 {
-                    if (cachedNode.Value != null && cachedNode.Value.Value == handler)
+                    if (cachedNode.Value != null && cachedNode.Value.Value == handler)  // 这就是指 EventHandler<T> 这个委托处理
                     {
-                        m_TempNodes.Add(cachedNode.Key, cachedNode.Value.Next);
+                        m_TempNodes.Add(cachedNode.Key, cachedNode.Value.Next); // 二维遍历； 可能有多个值满足？
                     }
                 }
 
@@ -249,7 +249,7 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 处理事件结点。
+        /// 处理事件结点。 处理特定类型的事件
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">事件参数。</param>

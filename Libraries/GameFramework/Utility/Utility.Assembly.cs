@@ -23,6 +23,7 @@ namespace GameFramework
             static Assembly()
             {
                 s_Assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                //用于获取当前应用程序域（AppDomain）中已加载的所有程序集（Assemblies）的集合
             }
 
             /// <summary>

@@ -16,6 +16,8 @@ namespace UnityGameFramework.Runtime
     /// <summary>
     /// 基础组件。
     ///  DPI 分辨率 游戏速度 息屏等
+    /// 框架的意思就是通过动静拆分切割，比如反射技术，把需要可以改写的  作为 各种助手，分离出去；
+    /// 比如可以 自定义 文本辅助，Json辅助，压缩辅助助手等等
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("Game Framework/Base")]
