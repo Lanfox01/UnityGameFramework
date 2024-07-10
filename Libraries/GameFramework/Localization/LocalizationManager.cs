@@ -1018,7 +1018,7 @@ namespace GameFramework.Localization
         }
 
         /// <summary>
-        /// 增加字典。
+        /// 增加字典。  通过一圈文本解析 包括 xmlLocalizaionHelper 和 DataProvider 之后，解析文件后，又最终把数据存到了这里！
         /// </summary>
         /// <param name="key">字典主键。</param>
         /// <param name="value">字典内容。</param>

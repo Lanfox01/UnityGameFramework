@@ -28,7 +28,7 @@ namespace UnityGameFramework.Runtime
         private float m_GameSpeedBeforePause = 1f;
 
         [SerializeField]
-        private bool m_EditorResourceMode = true;
+        private bool m_EditorResourceMode = true;// 是否是编辑器模式下？
 
         [SerializeField]
         private Language m_EditorLanguage = Language.Unspecified;

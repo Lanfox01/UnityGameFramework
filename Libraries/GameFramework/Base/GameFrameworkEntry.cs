@@ -27,7 +27,7 @@ namespace GameFramework
         {
             foreach (GameFrameworkModule module in s_GameFrameworkModules)
             {
-                  Debug.Log("GameFrameworkModule 's Update  "+module.GetType().FullName);
+                 // Debug.Log("GameFrameworkModule 's Update  "+module.GetType().FullName);
                  // Debug.Log("GameFrameworkModule 's Priority  "+module.Priority);
                 /* 包括 如下模块：
                  *  虽然很多模块都有重写 update(),                                       但是，只有部分有这个函数体代码；、

@@ -27,6 +27,7 @@ namespace UnityGameFramework.Runtime
 
         /// <summary>
         /// 获取系统语言。
+        /// 这里可能是大部分都系统语言，也有一些小众的没包括进来？
         /// </summary>
         public override Language SystemLanguage
         {

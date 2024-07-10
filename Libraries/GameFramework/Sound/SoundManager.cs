@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace GameFramework.Sound
 {
     /// <summary>
-    /// 声音管理器。
+    /// 声音管理器。  
     /// </summary>
     internal sealed partial class SoundManager : GameFrameworkModule, ISoundManager
     {

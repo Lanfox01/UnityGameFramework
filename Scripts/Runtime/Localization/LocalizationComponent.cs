@@ -154,6 +154,7 @@ namespace UnityGameFramework.Runtime
 
             m_LocalizationManager.SetDataProviderHelper(localizationHelper);
             m_LocalizationManager.SetLocalizationHelper(localizationHelper);
+            // 如果非编辑模式下baseComponent 组件上指定某个语言； 并且没有在  就默认是系统语言
             m_LocalizationManager.Language = baseComponent.EditorResourceMode && baseComponent.EditorLanguage != Language.Unspecified ? baseComponent.EditorLanguage : m_LocalizationManager.SystemLanguage;
             if (m_CachedBytesSize > 0)
             {

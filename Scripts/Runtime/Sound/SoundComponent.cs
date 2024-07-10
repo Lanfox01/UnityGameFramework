@@ -19,7 +19,7 @@ using UnityEngine.SceneManagement;
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 声音组件。
+    /// 声音组件。   声音驱动的核心是 AudioMixer 这个引擎组件
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("Game Framework/Sound")]

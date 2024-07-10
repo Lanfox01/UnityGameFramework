@@ -256,7 +256,7 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 解析内容。
+        /// 解析内容。  DefaultDictionary.xml
         /// </summary>
         /// <param name="dataString">要解析的内容字符串。</param>
         /// <param name="userData">用户自定义数据。</param>

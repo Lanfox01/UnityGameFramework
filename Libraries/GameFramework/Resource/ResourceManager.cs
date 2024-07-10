@@ -52,7 +52,7 @@ namespace GameFramework.Resource
         private string m_ReadWritePath;
         private ResourceMode m_ResourceMode;
         private bool m_RefuseSetFlag;
-        private string m_CurrentVariant;
+        private string m_CurrentVariant;  // 当前的语言变体？  = "zh-cn";   "en-us";  有什么用？
         private string m_UpdatePrefixUri;
         private string m_ApplicableGameVersion;
         private int m_InternalResourceVersion;

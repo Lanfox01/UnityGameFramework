@@ -20,7 +20,8 @@ using UnityEngine.SceneManagement;
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 编辑器资源组件。
+    /// 编辑器资源组件。 尽在开启编辑器模式下使用，正常出包情况使用 ResourceManager
+    /// 开关在这里 if (baseComponent.EditorResourceMode)  baseComponent.EditorResourceHelper
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class EditorResourceComponent : MonoBehaviour, IResourceManager
