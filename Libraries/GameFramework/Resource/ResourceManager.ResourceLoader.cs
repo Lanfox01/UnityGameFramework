@@ -307,7 +307,7 @@ namespace GameFramework.Resource
             {
                 ResourceInfo resourceInfo = null;
                 string[] dependencyAssetNames = null;
-                //检查资源是否存在 并获取资源的ResourceInfo和依赖资源的名称列表
+                //检查资源是否存在 并获取资源的ResourceInfo和依赖资源的名称列表   这里是否存在应该是对比资源索引目录 ； 找不到目录就返回错误
                 if (!CheckAsset(assetName, out resourceInfo, out dependencyAssetNames))
                 {
                     string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
@@ -319,7 +319,7 @@ namespace GameFramework.Resource
 
                     throw new GameFrameworkException(errorMessage);
                 }
-                // 如果资源是一个二进制资源
+                // 如果资源是一个二进制资源    什么情况下是 二进制？？ 二进制直接报错返回，不支持的？
                 if (resourceInfo.IsLoadFromBinary)
                 {
                     string errorMessage = Utility.Text.Format("Can not load asset '{0}' which is a binary asset.", assetName);
@@ -336,7 +336,7 @@ namespace GameFramework.Resource
                 foreach (string dependencyAssetName in dependencyAssetNames)
                 {
                     if (!LoadDependencyAsset(dependencyAssetName, priority, mainTask, userData))
-                    {
+                    {  // 如果有依赖包，但是但凡有一个加载不到依赖包，也是不行的；
                         string errorMessage = Utility.Text.Format("Can not load dependency asset '{0}' when load asset '{1}'.", dependencyAssetName, assetName);
                         if (loadAssetCallbacks.LoadAssetFailureCallback != null)
                         {
@@ -348,10 +348,10 @@ namespace GameFramework.Resource
                     }
                 }
 
-                m_TaskPool.AddTask(mainTask);
+                m_TaskPool.AddTask(mainTask);// 任务池 添加有新任务后，默认会 每帧刷新更新任务吧？
                 if (!resourceInfo.Ready)
                 {
-                    m_ResourceManager.UpdateResource(resourceInfo.ResourceName);
+                    m_ResourceManager.UpdateResource(resourceInfo.ResourceName); // 为什么 这里也要每帧 跟进？
                 }
             }
 
