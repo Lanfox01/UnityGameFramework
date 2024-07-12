@@ -9,7 +9,10 @@ using GameFramework;
 using GameFramework.Config;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Unity.Plastic.Newtonsoft.Json;
+using Unity.Plastic.Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -85,6 +88,11 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
+                if (configString.Contains("MacInfos"))
+                {
+                   return  ParseData_MacInfoConfig(configManager,configString,userData );
+                }
+
                 int position = 0;
                 string configLineString = null;
                 while ((configLineString = configString.ReadLine(ref position)) != null)
@@ -175,6 +183,46 @@ namespace UnityGameFramework.Runtime
             {
                 Log.Fatal("Resource component is invalid.");
                 return;
+            }
+        }
+
+       
+        // /// 处理 MacInfoConfig 文件   相同的 可以 处理其他文件？
+        public bool ParseData_MacInfoConfig(IConfigManager configManager, string configString, object userData)
+        {
+            try
+            {
+                Log.Warning("Get the string is '{0}' ", configString);
+                /// 到此为止，可以正常获取到 配置文件信息
+                ///  接下来是解析 配置文件
+                
+                // JObject o = JObject.Parse(configString);
+                // var clientips = o["excludeControlClientIp"].Select(t => (string) t).ToList();
+                // ControlClientIps.AddRange(clientips);
+                //
+                // var AllInformation = JsonConvert.DeserializeObject<AllInformation>(jsonStr);
+                // tcpSever = AllInformation.TcpSever;
+                // mqttSever = AllInformation.MqttSever;
+                // Debug.Log(tcpSever.tcpSeverPort);
+                //
+                //
+                // var MacInfos = AllInformation.MacInfos;
+                // foreach (var item in MacInfos)
+                // {
+                //     if (item.pjlingProjectorIPs != null)
+                //         Debug.Log("发现一台融合机 有投影机数量 ： " + item.pjlingProjectorIPs.Length);
+                // }
+                //
+                // LogText("加载配置共有多少台主机：" + MacInfos.Count.ToString());
+                // // 适配到区域X  主机列表；
+                // MacTargetALl = MacInfos;
+                
+                return true;
+            }
+            catch (Exception e)
+            {
+                
+                return false;
             }
         }
     }
